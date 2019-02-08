@@ -60,6 +60,7 @@ var server = http.createServer(function (req, res) {
             var payloadString = JSON.stringify(payload);
 
             // Return the response
+            res.setHeader('Content-Type','application/json');
             res.writeHead(statusCode);
             res.end(payloadString);
 
@@ -90,5 +91,5 @@ handlers.notFound = function(data,callback){
 
 //Define a request Router
 var router = {
-    'sample' : handlers.sample
+    'sample' : handlers.sample;
 };
