@@ -17,10 +17,13 @@ var server = http.createServer(function (req, res) {
     var trimmedPath = path.replace(/^\/+|\/+$/g, '');
 
     //Send the Response
-    res.end('Hello World!\n');
+    res.end('Hello World! \n');
+
+    //Get the Path
+    var method = req.method.toLowerCase();
 
     //Log the requst path
-    console.log('Request recieved on path: ' + trimmedPath);
+    console.log('Request recieved on path: '+ trimmedPath + ' with this method: ' + method);
 
 });
 
