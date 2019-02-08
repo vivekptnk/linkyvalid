@@ -25,8 +25,11 @@ var server = http.createServer(function (req, res) {
     //Get the Path
     var method = req.method.toLowerCase();
 
+    //Get the headers as an object
+    var headers = req.headers;
+
     //Log the requst path
-    console.log('Request recieved on path: '+ trimmedPath + ' with this method: ' +method+' with these query string parameters: ',queryStringObject);
+    console.log('Request recieved with these headers', headers);
 
 });
 
