@@ -140,7 +140,7 @@ handlers._users.put = function (data, callback) {
             callback(404, { 'Error': 'Missing Required Feilds' });
         };
     } else {
-        callback(404, { 'Error': 'Missing Required Feildslol' });
+        callback(404, { 'Error': 'Missing Required Feilds' });
     }
 };
 
@@ -171,6 +171,93 @@ handlers._users.delete = function (data, callback) {
     }
 };
 
+
+
+
+
+
+
+
+
+
+
+// Tokens
+handlers.tokens = function (data, callback) {
+    var acceptableMethods = ['post', 'get', 'put', 'delete'];
+    if (acceptableMethods.indexOf(data.method) > -1) {
+        handlers._tokens[data.method](data, callback);
+    } else {
+        callback(405);
+    }
+};
+
+// Container for all token methods
+handlers._tokens = {};
+
+// Tokens - post
+// Required Data : phone, password
+// Optional Data : none
+handlers._tokens.post = function (data, callback) {
+    var phone = typeof (data.payload.phone) == 'string' && data.payload.phone.trim().length == 10 ? data.payload.phone.trim() : false;
+    var password = typeof (data.payload.password) == 'string' && data.payload.password.trim().length > 0 ? data.payload.password.trim() : false;
+    if (phone && password) {
+        // Lookup the user that matches the phone number
+        _data.read('users', phone, function (err, userData) {
+            if (!err && userData) {
+                // Hash the sent password and compare it to the password stored in the user object
+                var hashedPassword = helpers.hash(password);
+
+                if (hashedPassword == userData.hashedPassword) {
+                    // If valid create a new token with a random name set expiration date one hour in the future
+                    var token_Id = helpers.createRandomString(20);
+                    var expires = Date.now() + 1000 * 60 * 60;
+                    var tokenObject = {
+                        'phone': phone,
+                        'id': token_Id,
+                        'expires': expires
+                    };
+
+                    // Store the token
+                    _data.create('tokens', token_Id, tokenObject, function (err) {
+                        if (!err) {
+                            callback(200, tokenObject);
+                        } else {
+                            callback(500, { 'Error': 'Could not create new token' });
+                        }
+                    });
+
+                } else {
+                    callback(400, { 'Error': 'Password did not match the specifed user\'s password ' })
+                }
+            } else {
+                callback(400, { 'Error': 'Missing Required Feilds' })
+            }
+        });
+
+    } else {
+        callback(400, { 'Error': 'Missing Required Feilds' })
+    }
+
+};
+
+// Tokens - get
+handlers._tokens.get = function (data, callback) {
+
+};
+
+// Tokens - put
+handlers._tokens.put = function (data, callback) {
+
+};
+
+// Tokens - delete
+handlers._tokens.delete = function (data, callback) {
+
+};
+
+
+
+
 // ping handler
 handlers.ping = function (data, callback) {
     callback(200);
@@ -180,6 +267,7 @@ handlers.ping = function (data, callback) {
 handlers.notFound = function (data, callback) {
     callback(404);
 };
+
 
 // Export the module
 module.exports = handlers;

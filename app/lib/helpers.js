@@ -29,5 +29,22 @@ helpers.parseJsonToObject = function (str) {
     }
 };
 
+// Create a string of random alpha numeric characters of a given length
+helpers.createRandomString = function (strLength) {
+    strLength = typeof (strLength) == 'number' && strLength > 0 ? strLength : false;
+    if (strLength) {
+        // Define all the possible characters  that could go into the string
+        var possibleCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789'
+
+        // Start the final string
+        var str = '';
+    } else {
+        return false;
+    }
+}
+
+
+
+
 // Export the Helpers
 module.exports = helpers;
